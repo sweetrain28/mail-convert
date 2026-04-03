@@ -57,8 +57,10 @@ ${text.trim()}`;
     const data = await geminiRes.json();
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return res.status(502).json({ error: '응답 파싱 실패' });
+    // 마크다운 코드블록 제거 후 JSON 추출
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return res.status(502).json({ error: '응답 파싱 실패', raw });
 
     const parsed = JSON.parse(jsonMatch[0]);
     return res.status(200).json(parsed);
