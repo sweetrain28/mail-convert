@@ -118,24 +118,28 @@
     .char-count { font-size: 12px; color: #aaa; }
 
     .btn-convert {
-      background: #1a237e;
       color: white;
       border: none;
-      padding: 10px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       transition: background 0.2s, transform 0.1s;
       font-family: inherit;
     }
 
-    .btn-convert:hover { background: #283593; }
     .btn-convert:active { transform: scale(0.97); }
-    .btn-convert:disabled { background: #9fa8da; cursor: not-allowed; }
+    .btn-convert:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-mail { background: #1a237e; }
+    .btn-mail:hover:not(:disabled) { background: #283593; }
+
+    .btn-messenger { background: #00796b; }
+    .btn-messenger:hover:not(:disabled) { background: #00695c; }
 
     .output-area {
       flex: 1;
@@ -314,9 +318,14 @@
 
     <div class="action-bar">
       <span class="char-count" id="charCount">0자</span>
-      <button class="btn-convert" id="convertBtn" onclick="convert()">
-        메일로 변환 →
-      </button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-convert btn-mail" id="convertMailBtn" onclick="convert('mail')">
+          ✉️ 메일로 변환
+        </button>
+        <button class="btn-convert btn-messenger" id="convertMsgBtn" onclick="convert('messenger')">
+          💬 메신저로 변환
+        </button>
+      </div>
     </div>
   </div>
 
@@ -324,14 +333,14 @@
   <div class="panel panel-right">
     <div class="panel-header">
       <div class="dot"></div>
-      <span>변환된 비즈니스 메일</span>
+      <span id="resultTitle">변환 결과</span>
       <div class="badge">결과</div>
     </div>
 
     <div class="output-area" id="outputArea">
       <div class="placeholder-msg" id="placeholder">
         <div class="big-icon">📨</div>
-        <p>왼쪽에 내용을 작성하고<br><strong>메일로 변환</strong> 버튼을 눌러주세요</p>
+        <p>왼쪽에 내용을 작성하고<br>변환 버튼을 눌러주세요</p>
       </div>
 
       <div class="loading" id="loading">
@@ -341,12 +350,13 @@
 
       <div class="error-msg" id="errorMsg"></div>
 
+      <!-- 메일 결과 -->
       <div class="email-block" id="emailBlock">
         <div class="email-field">
           <span class="email-label">수신</span>
           <span class="email-value">담당자분께</span>
         </div>
-        <div class="email-field">
+        <div class="email-field" id="subjectField">
           <span class="email-label">제목</span>
           <span class="email-subject-value" id="emailSubject"></span>
         </div>
@@ -370,30 +380,36 @@
     document.getElementById('charCount').textContent = text.length + '자';
   }
 
-  async function convert() {
+  async function convert(type) {
     const input = document.getElementById('inputText').value.trim();
     if (!input) { alert('내용을 입력해주세요.'); return; }
+
+    const isMessenger = type === 'messenger';
 
     document.getElementById('placeholder').style.display = 'none';
     document.getElementById('emailBlock').classList.remove('visible');
     document.getElementById('errorMsg').classList.remove('visible');
     document.getElementById('loading').classList.add('visible');
     document.getElementById('outputActions').style.display = 'none';
-    document.getElementById('convertBtn').disabled = true;
+    document.getElementById('convertMailBtn').disabled = true;
+    document.getElementById('convertMsgBtn').disabled = true;
+
+    // 제목 필드: 메신저는 숨김
+    document.getElementById('subjectField').style.display = isMessenger ? 'none' : 'flex';
+    document.getElementById('resultTitle').textContent = isMessenger ? '변환된 메신저 메시지' : '변환된 비즈니스 메일';
 
     try {
       const res = await fetch('/api/convert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: input }),
+        body: JSON.stringify({ text: input, type }),
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || '서버 오류가 발생했습니다.');
 
       document.getElementById('loading').classList.remove('visible');
-      document.getElementById('emailSubject').textContent = data.subject;
+      document.getElementById('emailSubject').textContent = data.subject || '';
       document.getElementById('emailBody').textContent = data.body;
       document.getElementById('emailBlock').classList.add('visible');
       document.getElementById('outputActions').style.display = 'flex';
@@ -402,14 +418,15 @@
       document.getElementById('errorMsg').textContent = '오류: ' + err.message;
       document.getElementById('errorMsg').classList.add('visible');
     } finally {
-      document.getElementById('convertBtn').disabled = false;
+      document.getElementById('convertMailBtn').disabled = false;
+      document.getElementById('convertMsgBtn').disabled = false;
     }
   }
 
   function copyEmail() {
     const subject = document.getElementById('emailSubject').textContent;
     const body = document.getElementById('emailBody').textContent;
-    const full = `제목: ${subject}\n\n${body}`;
+    const full = subject ? `제목: ${subject}\n\n${body}` : body;
     navigator.clipboard.writeText(full).then(showToast);
   }
 

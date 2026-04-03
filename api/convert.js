@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { text } = req.body;
+  const { text, type } = req.body;
   if (!text || !text.trim()) {
     return res.status(400).json({ error: '변환할 내용이 없습니다.' });
   }
@@ -19,7 +19,26 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'API 키가 서버에 설정되지 않았습니다.' });
   }
 
-  const prompt = `당신은 한국 직장인을 위한 비즈니스 메일 작성 전문가입니다.
+  const isMessenger = type === 'messenger';
+
+  const prompt = isMessenger
+    ? `당신은 한국 직장인을 위한 업무 메신저 메시지 작성 전문가입니다.
+아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 변환해주세요.
+
+[규칙]
+- 메일보다 가볍고 친근한 톤, 하지만 예의 바르게
+- 짧고 간결하게, 자연스러운 구어체 존댓말 사용
+- 딱딱한 격식체 표현 지양, 따뜻하고 배려 있는 말투
+- 반드시 아래 JSON 형식으로만 응답할 것 (다른 텍스트 없이)
+
+[응답 형식]
+{
+  "body": "메시지 내용"
+}
+
+[변환할 내용]
+${text.trim()}`
+    : `당신은 한국 직장인을 위한 비즈니스 메일 작성 전문가입니다.
 아래의 내용을 정중하고 격식 있는 한국어 업무 메일로 변환해주세요.
 
 [규칙]
