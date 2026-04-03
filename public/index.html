@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>비즈니스 메일 변환기</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a237e;
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    header .icon { font-size: 24px; }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    header p {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      padding: 24px;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .panel {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-header .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .panel-left .panel-header .dot { background: #ff9800; }
+    .panel-right .panel-header .dot { background: #4caf50; }
+
+    .panel-header span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .panel-header .badge {
+      margin-left: auto;
+      font-size: 11px;
+      background: #e8eaf6;
+      color: #3949ab;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    textarea {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.7;
+      resize: none;
+      color: #333;
+      font-family: inherit;
+      background: transparent;
+    }
+
+    textarea::placeholder { color: #aaa; }
+
+    .action-bar {
+      padding: 14px 20px;
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .char-count { font-size: 12px; color: #aaa; }
+
+    .btn-convert {
+      background: #1a237e;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .btn-convert:hover { background: #283593; }
+    .btn-convert:active { transform: scale(0.97); }
+    .btn-convert:disabled { background: #9fa8da; cursor: not-allowed; }
+
+    .output-area {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .placeholder-msg {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #bbb;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .placeholder-msg .big-icon { font-size: 40px; }
+    .placeholder-msg p { font-size: 14px; }
+
+    .email-block {
+      display: none;
+      flex-direction: column;
+    }
+
+    .email-block.visible { display: flex; }
+
+    .email-field {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 12px;
+    }
+
+    .email-label {
+      font-size: 12px;
+      color: #999;
+      font-weight: 600;
+      min-width: 40px;
+      padding-top: 2px;
+    }
+
+    .email-value { font-size: 14px; color: #555; }
+
+    .email-subject-value {
+      font-size: 15px;
+      color: #222;
+      font-weight: 600;
+    }
+
+    .email-body {
+      padding: 16px 0;
+      font-size: 14px;
+      line-height: 1.9;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    .output-actions {
+      padding: 14px 20px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-copy, .btn-reset {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+      border: none;
+    }
+
+    .btn-copy { background: #e8eaf6; color: #1a237e; }
+    .btn-copy:hover { background: #c5cae9; }
+    .btn-reset { background: #fce4ec; color: #c62828; }
+    .btn-reset:hover { background: #f8bbd0; }
+
+    .loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: #666;
+      padding: 60px 20px;
+      font-size: 14px;
+    }
+
+    .loading.visible { display: flex; }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #1a237e;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      display: none;
+      background: #fce4ec;
+      border: 1px solid #f48fb1;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #c62828;
+      line-height: 1.6;
+    }
+
+    .error-msg.visible { display: block; }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #333;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .container { flex-direction: column; padding: 12px; }
+      header { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="icon">✉️</div>
+  <div>
+    <h1>비즈니스 메일 변환기</h1>
+    <p>하고 싶은 말을 쓰면 정중한 업무 메일로 바꿔드립니다</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 왼쪽: 입력 -->
+  <div class="panel panel-left">
+    <div class="panel-header">
+      <div class="dot"></div>
+      <span>하고 싶은 말 작성</span>
+      <div class="badge">입력</div>
+    </div>
+
+    <textarea
+      id="inputText"
+      placeholder="예) 내일까지 자료 보내달라고 했는데 아직도 안 왔어요. 빨리 보내주세요."
+      oninput="updateCount()"
+    ></textarea>
+
+    <div class="action-bar">
+      <span class="char-count" id="charCount">0자</span>
+      <button class="btn-convert" id="convertBtn" onclick="convert()">
+        메일로 변환 →
+      </button>
+    </div>
+  </div>
+
+  <!-- 오른쪽: 출력 -->
+  <div class="panel panel-right">
+    <div class="panel-header">
+      <div class="dot"></div>
+      <span>변환된 비즈니스 메일</span>
+      <div class="badge">결과</div>
+    </div>
+
+    <div class="output-area" id="outputArea">
+      <div class="placeholder-msg" id="placeholder">
+        <div class="big-icon">📨</div>
+        <p>왼쪽에 내용을 작성하고<br><strong>메일로 변환</strong> 버튼을 눌러주세요</p>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <span>AI가 변환 중입니다...</span>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="email-block" id="emailBlock">
+        <div class="email-field">
+          <span class="email-label">수신</span>
+          <span class="email-value">담당자분께</span>
+        </div>
+        <div class="email-field">
+          <span class="email-label">제목</span>
+          <span class="email-subject-value" id="emailSubject"></span>
+        </div>
+        <div class="email-body" id="emailBody"></div>
+      </div>
+    </div>
+
+    <div class="output-actions" id="outputActions" style="display:none;">
+      <button class="btn-copy" onclick="copyEmail()">📋 복사하기</button>
+      <button class="btn-reset" onclick="resetAll()">↩ 다시 작성</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">클립보드에 복사되었습니다!</div>
+
+<script>
+  function updateCount() {
+    const text = document.getElementById('inputText').value;
+    document.getElementById('charCount').textContent = text.length + '자';
+  }
+
+  async function convert() {
+    const input = document.getElementById('inputText').value.trim();
+    if (!input) { alert('내용을 입력해주세요.'); return; }
+
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('emailBlock').classList.remove('visible');
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('loading').classList.add('visible');
+    document.getElementById('outputActions').style.display = 'none';
+    document.getElementById('convertBtn').disabled = true;
+
+    try {
+      const res = await fetch('/api/convert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: input }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || '서버 오류가 발생했습니다.');
+
+      document.getElementById('loading').classList.remove('visible');
+      document.getElementById('emailSubject').textContent = data.subject;
+      document.getElementById('emailBody').textContent = data.body;
+      document.getElementById('emailBlock').classList.add('visible');
+      document.getElementById('outputActions').style.display = 'flex';
+    } catch (err) {
+      document.getElementById('loading').classList.remove('visible');
+      document.getElementById('errorMsg').textContent = '오류: ' + err.message;
+      document.getElementById('errorMsg').classList.add('visible');
+    } finally {
+      document.getElementById('convertBtn').disabled = false;
+    }
+  }
+
+  function copyEmail() {
+    const subject = document.getElementById('emailSubject').textContent;
+    const body = document.getElementById('emailBody').textContent;
+    const full = `제목: ${subject}\n\n${body}`;
+    navigator.clipboard.writeText(full).then(showToast);
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function resetAll() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('charCount').textContent = '0자';
+    document.getElementById('emailBlock').classList.remove('visible');
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('outputActions').style.display = 'none';
+    document.getElementById('placeholder').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
