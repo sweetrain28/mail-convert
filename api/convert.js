@@ -65,7 +65,7 @@ ${text.trim()}`;
           'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'deepseek-r1-distill-llama-70b',
+          model: 'qwen/qwen3-32b',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.7,
           max_tokens: 1024,
