@@ -165,44 +165,71 @@
     .placeholder-msg .big-icon { font-size: 40px; }
     .placeholder-msg p { font-size: 14px; }
 
-    .email-block {
+    .results-list {
       display: none;
       flex-direction: column;
-    }
-
-    .email-block.visible { display: flex; }
-
-    .email-field {
-      display: flex;
-      align-items: flex-start;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
       gap: 12px;
     }
 
-    .email-label {
-      font-size: 12px;
-      color: #999;
-      font-weight: 600;
-      min-width: 40px;
-      padding-top: 2px;
+    .results-list.visible { display: flex; }
+
+    .result-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
     }
 
-    .email-value { font-size: 14px; color: #555; }
+    .result-card:hover { border-color: #9fa8da; background: #f8f9ff; }
 
-    .email-subject-value {
-      font-size: 15px;
+    .result-card.selected {
+      border-color: #1a237e;
+      background: #f0f2ff;
+    }
+
+    .result-card .card-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #9fa8da;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-card.selected .card-num { color: #1a237e; }
+
+    .result-card .card-subject {
+      font-size: 13px;
+      font-weight: 700;
       color: #222;
-      font-weight: 600;
+      margin-bottom: 6px;
     }
 
-    .email-body {
-      padding: 16px 0;
-      font-size: 14px;
-      line-height: 1.9;
-      color: #333;
+    .result-card .card-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #555;
       white-space: pre-wrap;
     }
+
+    .result-card .card-check {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1a237e;
+      color: white;
+      font-size: 11px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-card.selected .card-check { display: flex; }
 
     .output-actions {
       padding: 14px 20px;
@@ -296,8 +323,8 @@
 <header>
   <div class="icon">✉️</div>
   <div>
-    <h1>비즈니스 메일 변환기</h1>
-    <p>하고 싶은 말을 쓰면 정중한 업무 메일로 바꿔드립니다</p>
+    <h1>비즈니스 메일&메세지 변환기</h1>
+    <p>하고 싶은 말을 쓰면 정중한 업무 메일/메신저로 바꿔드립니다</p>
   </div>
 </header>
 
@@ -351,22 +378,12 @@
 
       <div class="error-msg" id="errorMsg"></div>
 
-      <!-- 메일 결과 -->
-      <div class="email-block" id="emailBlock">
-        <div class="email-field">
-          <span class="email-label">수신</span>
-          <span class="email-value">담당자분께</span>
-        </div>
-        <div class="email-field" id="subjectField">
-          <span class="email-label">제목</span>
-          <span class="email-subject-value" id="emailSubject"></span>
-        </div>
-        <div class="email-body" id="emailBody"></div>
-      </div>
+      <!-- 결과 카드 목록 -->
+      <div class="results-list" id="resultsList"></div>
     </div>
 
     <div class="output-actions" id="outputActions" style="display:none;">
-      <button class="btn-copy" onclick="copyEmail()">📋 복사하기</button>
+      <button class="btn-copy" onclick="copySelected()">📋 선택 항목 복사</button>
       <button class="btn-reset" onclick="resetAll()">↩ 다시 작성</button>
     </div>
   </div>
@@ -376,6 +393,9 @@
 <div class="toast" id="toast">클립보드에 복사되었습니다!</div>
 
 <script>
+  let selectedIndex = -1;
+  let currentResults = [];
+
   function updateCount() {
     const text = document.getElementById('inputText').value;
     document.getElementById('charCount').textContent = text.length + '자';
@@ -388,16 +408,16 @@
     const isMessenger = type === 'messenger';
 
     document.getElementById('placeholder').style.display = 'none';
-    document.getElementById('emailBlock').classList.remove('visible');
+    document.getElementById('resultsList').classList.remove('visible');
     document.getElementById('errorMsg').classList.remove('visible');
     document.getElementById('loading').classList.add('visible');
     document.getElementById('outputActions').style.display = 'none';
     document.getElementById('convertMailBtn').disabled = true;
     document.getElementById('convertMsgBtn').disabled = true;
-
-    // 제목 필드: 메신저는 숨김
-    document.getElementById('subjectField').style.display = isMessenger ? 'none' : 'flex';
     document.getElementById('resultTitle').textContent = isMessenger ? '변환된 메신저 메시지' : '변환된 비즈니스 메일';
+
+    selectedIndex = -1;
+    currentResults = [];
 
     try {
       const res = await fetch('/api/convert', {
@@ -409,10 +429,11 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '서버 오류가 발생했습니다.');
 
+      currentResults = data.results || [];
+      renderCards(isMessenger);
+
       document.getElementById('loading').classList.remove('visible');
-      document.getElementById('emailSubject').textContent = data.subject || '';
-      document.getElementById('emailBody').textContent = data.body;
-      document.getElementById('emailBlock').classList.add('visible');
+      document.getElementById('resultsList').classList.add('visible');
       document.getElementById('outputActions').style.display = 'flex';
     } catch (err) {
       document.getElementById('loading').classList.remove('visible');
@@ -424,10 +445,35 @@
     }
   }
 
-  function copyEmail() {
-    const subject = document.getElementById('emailSubject').textContent;
-    const body = document.getElementById('emailBody').textContent;
-    const full = subject ? `제목: ${subject}\n\n${body}` : body;
+  function renderCards(isMessenger) {
+    const list = document.getElementById('resultsList');
+    list.innerHTML = '';
+    currentResults.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'result-card' + (i === 0 ? ' selected' : '');
+      card.onclick = () => selectCard(i);
+      card.innerHTML = `
+        <div class="card-num">버전 ${i + 1}</div>
+        ${!isMessenger && item.subject ? `<div class="card-subject">📌 ${item.subject}</div>` : ''}
+        <div class="card-body">${item.body}</div>
+        <div class="card-check">✓</div>
+      `;
+      list.appendChild(card);
+    });
+    selectedIndex = 0;
+  }
+
+  function selectCard(index) {
+    selectedIndex = index;
+    document.querySelectorAll('.result-card').forEach((card, i) => {
+      card.classList.toggle('selected', i === index);
+    });
+  }
+
+  function copySelected() {
+    if (selectedIndex < 0 || !currentResults[selectedIndex]) return;
+    const item = currentResults[selectedIndex];
+    const full = item.subject ? `제목: ${item.subject}\n\n${item.body}` : item.body;
     navigator.clipboard.writeText(full).then(showToast);
   }
 
@@ -440,10 +486,12 @@
   function resetAll() {
     document.getElementById('inputText').value = '';
     document.getElementById('charCount').textContent = '0자';
-    document.getElementById('emailBlock').classList.remove('visible');
+    document.getElementById('resultsList').classList.remove('visible');
     document.getElementById('errorMsg').classList.remove('visible');
     document.getElementById('outputActions').style.display = 'none';
     document.getElementById('placeholder').style.display = 'flex';
+    selectedIndex = -1;
+    currentResults = [];
   }
 </script>
 

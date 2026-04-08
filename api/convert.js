@@ -23,33 +23,46 @@ export default async function handler(req, res) {
 
   const prompt = isMessenger
     ? `당신은 한국 직장인을 위한 업무 메신저 메시지 작성 전문가입니다.
-아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 변환해주세요.
+아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 5가지 다른 버전으로 변환해주세요.
 
 [규칙]
 - 메일보다 가볍고 친근한 톤, 하지만 예의 바르게
 - 짧고 간결하게, 자연스러운 구어체 존댓말 사용
 - 딱딱한 격식체 표현 지양, 따뜻하고 배려 있는 말투
+- 각 버전은 톤이나 표현 방식이 서로 달라야 함
 - 반드시 아래 JSON 형식으로만 응답할 것 (다른 텍스트 없이)
 
 [응답 형식]
 {
-  "body": "메시지 내용"
+  "results": [
+    { "body": "메시지 내용 1" },
+    { "body": "메시지 내용 2" },
+    { "body": "메시지 내용 3" },
+    { "body": "메시지 내용 4" },
+    { "body": "메시지 내용 5" }
+  ]
 }
 
 [변환할 내용]
 ${text.trim()}`
     : `당신은 한국 직장인을 위한 비즈니스 메일 작성 전문가입니다.
-아래의 내용을 정중하고 격식 있는 한국어 업무 메일로 변환해주세요.
+아래의 내용을 정중하고 격식 있는 한국어 업무 메일로 5가지 다른 버전으로 변환해주세요.
 
 [규칙]
 - 인사말로 시작하고 마무리 인사로 끝낼 것
 - 존댓말 사용, 정중하고 전문적인 톤 유지
+- 각 버전은 제목이나 표현 방식이 서로 달라야 함
 - 반드시 아래 JSON 형식으로만 응답할 것 (다른 텍스트 없이)
 
 [응답 형식]
 {
-  "subject": "메일 제목",
-  "body": "메일 본문 전체"
+  "results": [
+    { "subject": "메일 제목 1", "body": "메일 본문 1" },
+    { "subject": "메일 제목 2", "body": "메일 본문 2" },
+    { "subject": "메일 제목 3", "body": "메일 본문 3" },
+    { "subject": "메일 제목 4", "body": "메일 본문 4" },
+    { "subject": "메일 제목 5", "body": "메일 본문 5" }
+  ]
 }
 
 [변환할 내용]
@@ -63,7 +76,7 @@ ${text.trim()}`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 1024, thinkingConfig: { thinkingBudget: 0 } },
+          generationConfig: { temperature: 0.9, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
         }),
       }
     );
