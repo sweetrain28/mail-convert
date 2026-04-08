@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   const prompt = isMessenger
     ? `당신은 한국 직장인을 위한 업무 메신저 메시지 작성 전문가입니다.
-아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 5가지 다른 버전으로 변환해주세요.
+아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 3가지 다른 버전으로 변환해주세요.
 
 [규칙]
 - 메일보다 가볍고 친근한 톤, 하지만 예의 바르게
@@ -37,16 +37,14 @@ export default async function handler(req, res) {
   "results": [
     { "body": "메시지 내용 1" },
     { "body": "메시지 내용 2" },
-    { "body": "메시지 내용 3" },
-    { "body": "메시지 내용 4" },
-    { "body": "메시지 내용 5" }
+    { "body": "메시지 내용 3" }
   ]
 }
 
 [변환할 내용]
 ${text.trim()}`
     : `당신은 한국 직장인을 위한 비즈니스 메일 작성 전문가입니다.
-아래의 내용을 정중하고 격식 있는 한국어 업무 메일로 5가지 다른 버전으로 변환해주세요.
+아래의 내용을 정중하고 격식 있는 한국어 업무 메일로 3가지 다른 버전으로 변환해주세요.
 
 [규칙]
 - 인사말로 시작하고 마무리 인사로 끝낼 것
@@ -59,9 +57,7 @@ ${text.trim()}`
   "results": [
     { "subject": "메일 제목 1", "body": "메일 본문 1" },
     { "subject": "메일 제목 2", "body": "메일 본문 2" },
-    { "subject": "메일 제목 3", "body": "메일 본문 3" },
-    { "subject": "메일 제목 4", "body": "메일 본문 4" },
-    { "subject": "메일 제목 5", "body": "메일 본문 5" }
+    { "subject": "메일 제목 3", "body": "메일 본문 3" }
   ]
 }
 
@@ -70,13 +66,13 @@ ${text.trim()}`;
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.9, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
+          generationConfig: { temperature: 0.9, maxOutputTokens: 2048 },
         }),
       }
     );
