@@ -83,7 +83,9 @@ ${text.trim()}`;
     }
 
     const data = await geminiRes.json();
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const textPart = parts.find(p => !p.thought && p.text);
+    const raw = textPart?.text || parts[0]?.text || '';
 
     console.log('Gemini raw response:', raw);
 
