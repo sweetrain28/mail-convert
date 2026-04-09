@@ -73,6 +73,7 @@ ${text.trim()}`;
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { temperature: 0.9, maxOutputTokens: 2048 },
+          thinkingConfig: { thinkingBudget: 0 },
         }),
       }
     );
