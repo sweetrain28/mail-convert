@@ -7,25 +7,22 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      background: #ffffff;
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+      background: #faf9f7;
       min-height: 100vh;
-      color: #061b31;
-      font-feature-settings: "ss01";
-      font-weight: 300;
+      color: #000000;
+      font-weight: 400;
     }
 
     /* ── 헤더 ── */
     header {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid #e5edf5;
+      background: #faf9f7;
+      border-bottom: 1px solid #dad4c8;
       height: 60px;
       display: flex;
       align-items: center;
@@ -39,71 +36,81 @@
     .logo-img {
       width: 26px;
       height: 26px;
-      border-radius: 4px;
+      border-radius: 8px;
       object-fit: contain;
     }
 
     .logo-text {
       font-size: 15px;
-      font-weight: 400;
-      color: #061b31;
-      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: #000000;
+      letter-spacing: -0.1px;
     }
 
     /* ── 메인 레이아웃 ── */
     .page {
       max-width: 1080px;
       margin: 0 auto;
-      padding: 52px 32px 80px;
+      padding: 56px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.08px;
+      color: #9f9b93;
+      margin-bottom: 14px;
     }
 
     .page-title {
-      font-size: 32px;
-      font-weight: 300;
-      color: #061b31;
-      letter-spacing: -0.64px;
+      font-size: 44px;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: -1.1px;
       line-height: 1.10;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .page-desc {
-      font-size: 16px;
-      font-weight: 300;
-      color: #64748d;
-      line-height: 1.5;
+      font-size: 18px;
+      font-weight: 400;
+      color: #9f9b93;
+      line-height: 1.60;
+      letter-spacing: -0.36px;
       margin-bottom: 36px;
     }
 
     /* ── 탭 ── */
     .type-tabs {
       display: flex;
-      gap: 6px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 28px;
     }
 
     .tab-btn {
-      padding: 7px 16px;
-      border-radius: 4px;
-      border: 1px solid #e5edf5;
+      padding: 8px 20px;
+      border-radius: 1584px;
+      border: 1px solid #dad4c8;
       background: #ffffff;
       font-size: 14px;
-      font-weight: 400;
-      color: #64748d;
+      font-weight: 500;
+      color: #9f9b93;
       cursor: pointer;
       transition: all 0.15s;
       font-family: inherit;
-      letter-spacing: -0.1px;
+      box-shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px;
     }
 
     .tab-btn.active {
-      background: #533afd;
-      border-color: #533afd;
-      color: #fff;
+      background: #000000;
+      border-color: #000000;
+      color: #ffffff;
     }
 
     .tab-btn:hover:not(.active) {
-      border-color: #b9b9f9;
-      color: #533afd;
+      border-color: #9f9b93;
+      color: #000000;
     }
 
     /* ── 2열 레이아웃 ── */
@@ -117,15 +124,15 @@
     /* ── 카드 공통 ── */
     .card {
       background: #ffffff;
-      border-radius: 6px;
-      border: 1px solid #e5edf5;
+      border-radius: 24px;
+      border: 1px solid #dad4c8;
       overflow: hidden;
-      box-shadow: rgba(50,50,93,0.25) 0px 30px 45px -30px, rgba(0,0,0,0.1) 0px 18px 36px -18px;
+      box-shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px;
     }
 
     .card-head {
-      padding: 18px 22px 16px;
-      border-bottom: 1px solid #e5edf5;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #eee9df;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -133,19 +140,21 @@
 
     .card-head-title {
       font-size: 13px;
-      font-weight: 400;
-      color: #273951;
+      font-weight: 600;
+      color: #000000;
       letter-spacing: -0.1px;
+      text-transform: uppercase;
+      letter-spacing: 1.08px;
     }
 
     .badge {
       font-size: 10px;
-      font-weight: 400;
-      padding: 1px 6px;
-      border-radius: 4px;
-      background: rgba(21,190,83,0.2);
-      color: #108c3d;
-      border: 1px solid rgba(21,190,83,0.4);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 11px;
+      background: #f0f8ff;
+      color: #3859f9;
+      border: 1px solid #c1d8f8;
     }
 
     /* ── 입력 영역 ── */
@@ -154,49 +163,57 @@
       min-height: 280px;
       border: none;
       outline: none;
-      padding: 20px 22px;
-      font-size: 15px;
-      font-weight: 300;
-      line-height: 1.65;
-      color: #061b31;
+      padding: 20px 24px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.60;
+      color: #000000;
       resize: vertical;
       font-family: inherit;
       background: transparent;
+      letter-spacing: -0.1px;
     }
 
-    textarea::placeholder { color: #64748d; font-weight: 300; }
+    textarea::placeholder { color: #9f9b93; }
 
     .input-footer {
-      padding: 14px 22px;
-      border-top: 1px solid #e5edf5;
+      padding: 14px 24px;
+      border-top: 1px solid #eee9df;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .char-count { font-size: 12px; color: #64748d; font-weight: 300; }
+    .char-count { font-size: 12px; color: #9f9b93; font-weight: 400; }
 
+    /* ── 플레이풀 버튼 ── */
     .btn-convert {
-      background: #533afd;
-      color: #fff;
+      background: #000000;
+      color: #ffffff;
       border: none;
-      padding: 8px 18px;
-      border-radius: 4px;
+      padding: 10px 22px;
+      border-radius: 1584px;
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 500;
       cursor: pointer;
       font-family: inherit;
-      transition: background 0.15s, transform 0.1s;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.15s;
       letter-spacing: -0.1px;
+      position: relative;
     }
 
-    .btn-convert:hover:not(:disabled) { background: #4434d4; }
-    .btn-convert:active { transform: scale(0.98); }
+    .btn-convert:hover:not(:disabled) {
+      background: #078a52;
+      transform: rotateZ(-4deg) translateY(-3px);
+      box-shadow: rgb(0,0,0) -5px 5px;
+    }
+
+    .btn-convert:active { transform: scale(0.97); }
     .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── 결과 영역 ── */
     .output-body {
-      padding: 18px 22px;
+      padding: 18px 24px;
       min-height: 280px;
     }
 
@@ -207,12 +224,12 @@
       justify-content: center;
       gap: 10px;
       padding: 64px 20px;
-      color: #64748d;
+      color: #9f9b93;
       text-align: center;
     }
 
-    .placeholder-msg .big-icon { font-size: 32px; opacity: 0.6; }
-    .placeholder-msg p { font-size: 14px; font-weight: 300; line-height: 1.6; color: #64748d; }
+    .placeholder-msg .big-icon { font-size: 32px; opacity: 0.7; }
+    .placeholder-msg p { font-size: 14px; font-weight: 400; line-height: 1.6; color: #9f9b93; }
 
     .loading {
       display: none;
@@ -221,9 +238,8 @@
       justify-content: center;
       gap: 14px;
       padding: 64px 20px;
-      color: #64748d;
+      color: #9f9b93;
       font-size: 13px;
-      font-weight: 300;
     }
 
     .loading.visible { display: flex; }
@@ -231,8 +247,8 @@
     .spinner {
       width: 22px;
       height: 22px;
-      border: 2px solid #e5edf5;
-      border-top-color: #533afd;
+      border: 2px solid #eee9df;
+      border-top-color: #078a52;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
@@ -241,13 +257,13 @@
 
     .error-msg {
       display: none;
-      background: #fff8f8;
-      border: 1px solid #ffd7ef;
-      border-radius: 4px;
+      background: #fff5f6;
+      border: 1px solid #ffc2c8;
+      border-radius: 12px;
       padding: 14px 16px;
       font-size: 13px;
-      font-weight: 300;
-      color: #ea2261;
+      font-weight: 400;
+      color: #fc7981;
       line-height: 1.6;
     }
 
@@ -263,49 +279,52 @@
     .results-list.visible { display: flex; }
 
     .result-card {
-      border: 1px solid #e5edf5;
-      border-radius: 5px;
+      border: 1px solid #dad4c8;
+      border-radius: 12px;
       padding: 14px 16px;
       cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
       position: relative;
       background: #ffffff;
+      box-shadow: rgba(0,0,0,0.05) 0px 1px 2px;
     }
 
     .result-card:hover {
-      border-color: #b9b9f9;
-      box-shadow: rgba(23,23,23,0.06) 0px 3px 6px;
+      border-color: #9f9b93;
+      transform: translateY(-1px);
+      box-shadow: rgba(0,0,0,0.1) 0px 4px 8px;
     }
 
     .result-card.selected {
-      border-color: #533afd;
-      box-shadow: rgba(83,58,253,0.1) 0px 0px 0px 3px;
+      border-color: #000000;
+      background: #faf9f7;
+      box-shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset;
     }
 
     .card-num {
-      font-size: 11px;
-      font-weight: 400;
-      color: #64748d;
+      font-size: 10px;
+      font-weight: 600;
+      color: #9f9b93;
       margin-bottom: 6px;
-      letter-spacing: 0.2px;
+      letter-spacing: 1.08px;
       text-transform: uppercase;
     }
 
-    .result-card.selected .card-num { color: #533afd; }
+    .result-card.selected .card-num { color: #078a52; }
 
     .card-subject {
       font-size: 13px;
-      font-weight: 400;
-      color: #061b31;
+      font-weight: 600;
+      color: #000000;
       margin-bottom: 8px;
       letter-spacing: -0.1px;
     }
 
     .card-body {
       font-size: 13px;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.75;
-      color: #273951;
+      color: #55534e;
       white-space: pre-wrap;
     }
 
@@ -316,21 +335,21 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: #533afd;
+      background: #000000;
       color: #fff;
       font-size: 10px;
       display: none;
       align-items: center;
       justify-content: center;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .result-card.selected .card-check { display: flex; }
 
     /* ── 하단 액션 ── */
     .output-footer {
-      padding: 14px 22px;
-      border-top: 1px solid #e5edf5;
+      padding: 14px 24px;
+      border-top: 1px solid #eee9df;
       display: none;
       gap: 8px;
     }
@@ -339,36 +358,44 @@
 
     .btn-copy {
       flex: 1;
-      padding: 8px 0;
-      border-radius: 4px;
+      padding: 10px 0;
+      border-radius: 1584px;
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 500;
       cursor: pointer;
       font-family: inherit;
       border: none;
-      background: #533afd;
+      background: #000000;
       color: #fff;
-      transition: background 0.15s;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.15s;
       letter-spacing: -0.1px;
     }
 
-    .btn-copy:hover { background: #4434d4; }
+    .btn-copy:hover {
+      background: #3bd3fd;
+      color: #000000;
+      transform: rotateZ(-3deg) translateY(-2px);
+      box-shadow: rgb(0,0,0) -4px 4px;
+    }
 
     .btn-reset {
-      padding: 8px 16px;
-      border-radius: 4px;
+      padding: 10px 20px;
+      border-radius: 1584px;
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 500;
       cursor: pointer;
       font-family: inherit;
-      border: 1px solid #e5edf5;
+      border: 1px solid #dad4c8;
       background: transparent;
-      color: #64748d;
+      color: #9f9b93;
       transition: all 0.15s;
       letter-spacing: -0.1px;
     }
 
-    .btn-reset:hover { border-color: #b9b9f9; color: #533afd; }
+    .btn-reset:hover {
+      border-color: #9f9b93;
+      color: #000000;
+    }
 
     /* ── 토스트 ── */
     .toast {
@@ -376,16 +403,16 @@
       bottom: 32px;
       left: 50%;
       transform: translateX(-50%) translateY(12px);
-      background: #061b31;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 4px;
+      background: #02492a;
+      color: #84e7a5;
+      padding: 10px 22px;
+      border-radius: 1584px;
       font-size: 13px;
-      font-weight: 400;
+      font-weight: 500;
       opacity: 0;
       transition: opacity 0.2s, transform 0.2s;
       pointer-events: none;
-      box-shadow: rgba(50,50,93,0.25) 0px 14px 21px -14px, rgba(0,0,0,0.1) 0px 8px 17px -8px;
+      box-shadow: rgb(0,0,0) -4px 4px;
     }
 
     .toast.show {
@@ -396,7 +423,7 @@
     @media (max-width: 768px) {
       .columns { grid-template-columns: 1fr; }
       .page { padding: 32px 20px 60px; }
-      .page-title { font-size: 26px; }
+      .page-title { font-size: 32px; }
     }
   </style>
 </head>
@@ -408,6 +435,7 @@
 </header>
 
 <div class="page">
+  <p class="page-label">AI 변환기</p>
   <h1 class="page-title">메시지 변환하기</h1>
   <p class="page-desc">하고 싶은 말을 입력하면 AI가 정중한 업무 메일 또는 메신저 메시지로 바꿔드립니다.</p>
 
@@ -420,8 +448,8 @@
     <!-- 입력 -->
     <div class="card">
       <div class="card-head">
-        <span class="card-head-title">하고 싶은 말 작성</span>
-        <span class="badge">입력</span>
+        <span class="card-head-title">입력</span>
+        <span class="badge">작성</span>
       </div>
       <textarea
         id="inputText"
@@ -437,8 +465,8 @@
     <!-- 결과 -->
     <div class="card">
       <div class="card-head">
-        <span class="card-head-title" id="resultTitle">변환 결과</span>
-        <span class="badge">결과</span>
+        <span class="card-head-title" id="resultTitle">결과</span>
+        <span class="badge">AI</span>
       </div>
 
       <div class="output-body" id="outputBody">
@@ -495,7 +523,7 @@
     document.getElementById('loading').classList.add('visible');
     document.getElementById('outputFooter').classList.remove('visible');
     document.getElementById('convertBtn').disabled = true;
-    document.getElementById('resultTitle').textContent = isMessenger ? '변환된 메신저 메시지' : '변환된 비즈니스 메일';
+    document.getElementById('resultTitle').textContent = isMessenger ? '메신저' : '메일';
 
     selectedIndex = -1;
     currentResults = [];
