@@ -8,14 +8,26 @@
   <meta property="og:title" content="비즈니스 메일&메세지 변환기" />
   <meta property="og:image" content="/ogimg.png" />
   <meta property="og:type" content="website" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    @font-face {
+      font-family: 'SchoolSafetyRoundedSmile';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-R.woff2') format('woff2');
+      font-weight: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SchoolSafetyRoundedSmile';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-B.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+  </style>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+      font-family: 'Pretendard', Arial, sans-serif;
       background: #faf9f7;
       min-height: 100vh;
       color: #000000;
@@ -30,10 +42,18 @@
       display: flex;
       align-items: center;
       padding: 0 32px;
-      gap: 10px;
       position: sticky;
       top: 0;
       z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .logo-img {
@@ -67,8 +87,9 @@
     }
 
     .page-title {
+      font-family: 'SchoolSafetyRoundedSmile', sans-serif;
       font-size: 44px;
-      font-weight: 600;
+      font-weight: 700;
       color: #000000;
       letter-spacing: -1.1px;
       line-height: 1.10;
@@ -433,8 +454,10 @@
 <body>
 
 <header>
-  <img src="/favicon.png" class="logo-img" alt="logo" />
-  <span class="logo-text">비즈니스 메일&메세지 변환기</span>
+  <div class="header-inner">
+    <img src="/favicon.png" class="logo-img" alt="logo" />
+    <span class="logo-text">비즈니스 메일&메세지 변환기</span>
+  </div>
 </header>
 
 <div class="page">
