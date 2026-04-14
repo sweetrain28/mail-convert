@@ -614,7 +614,7 @@
     const item = currentResults[selectedIndex];
     let full;
     if (currentType === 'report') {
-      const bullets = item.bullets ? item.bullets.map(b => `• ${b}`).join('\n') : '';
+      const bullets = item.bullets ? item.bullets.join('\n') : '';
       full = item.title ? `${item.title}\n\n${bullets}` : bullets;
     } else {
       full = item.subject ? `제목: ${item.subject}\n\n${item.body}` : item.body;
