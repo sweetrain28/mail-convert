@@ -20,8 +20,31 @@ export default async function handler(req, res) {
   }
 
   const isMessenger = type === 'messenger';
+  const isReport = type === 'report';
 
-  const prompt = isMessenger
+  const prompt = isReport
+    ? `당신은 한국 직장인을 위한 업무 보고서 작성 전문가입니다.
+아래의 내용을 핵심만 담은 간결한 보고서 형식으로 3가지 다른 버전으로 변환해주세요.
+
+[규칙]
+- 각 항목은 불릿(bullet) 형태로 작성
+- 모든 항목은 명사형으로 끝낼 것 (예: "완료", "검토 필요", "3건 처리")
+- 군더더기 표현 제거, 최대한 짧고 명확하게
+- 각 버전은 구조나 강조점이 서로 달라야 함
+- 반드시 아래 JSON 형식으로만 응답할 것 (다른 텍스트 없이)
+
+[응답 형식]
+{
+  "results": [
+    { "title": "보고서 제목 1", "bullets": ["항목 1", "항목 2", "항목 3"] },
+    { "title": "보고서 제목 2", "bullets": ["항목 1", "항목 2", "항목 3"] },
+    { "title": "보고서 제목 3", "bullets": ["항목 1", "항목 2", "항목 3"] }
+  ]
+}
+
+[변환할 내용]
+${text.trim()}`
+    : isMessenger
     ? `당신은 한국 직장인을 위한 업무 메신저 메시지 작성 전문가입니다.
 아래의 내용을 업무용 메신저(카카오톡, 슬랙 등)에 어울리는 부드럽고 친절한 한국어 메시지로 3가지 다른 버전으로 변환해주세요.
 

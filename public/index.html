@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>비즈니스 메일&메세지 변환기</title>
+  <title>비즈니스 텍스트 변환기</title>
   <link rel="icon" type="image/png" href="/favicon.png" />
-  <meta property="og:title" content="비즈니스 메일&메세지 변환기" />
+  <meta property="og:title" content="비즈니스 텍스트 변환기" />
   <meta property="og:image" content="/ogimg.png" />
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
@@ -450,18 +450,19 @@
 <header>
   <div class="header-inner">
     <img src="/favicon.png" class="logo-img" alt="logo" />
-    <span class="logo-text">비즈니스 메일&메세지 변환기</span>
+    <span class="logo-text">비즈니스 텍스트 변환기</span>
   </div>
 </header>
 
 <div class="page">
   <p class="page-label">AI 변환기</p>
   <h1 class="page-title">메시지 변환하기</h1>
-  <p class="page-desc">하고 싶은 말을 입력하면 AI가 정중한 업무 메일 또는 메신저 메시지로 바꿔드립니다.</p>
+  <p class="page-desc">하고 싶은 말을 입력하면 AI가 업무 메일, 메신저 메시지, 또는 보고서로 변환해드립니다.</p>
 
   <div class="type-tabs">
     <button class="tab-btn active" id="tabMail" onclick="setTab('mail')">✉️ 업무 메일</button>
     <button class="tab-btn" id="tabMsg" onclick="setTab('messenger')">💬 메신저 메시지</button>
+    <button class="tab-btn" id="tabReport" onclick="setTab('report')">📋 보고서</button>
   </div>
 
   <div class="columns">
@@ -524,6 +525,7 @@
     currentType = type;
     document.getElementById('tabMail').classList.toggle('active', type === 'mail');
     document.getElementById('tabMsg').classList.toggle('active', type === 'messenger');
+    document.getElementById('tabReport').classList.toggle('active', type === 'report');
   }
 
   function updateCount() {
@@ -535,7 +537,7 @@
     const input = document.getElementById('inputText').value.trim();
     if (!input) { alert('내용을 입력해주세요.'); return; }
 
-    const isMessenger = currentType === 'messenger';
+    const titleMap = { mail: '메일', messenger: '메신저', report: '보고서' };
 
     document.getElementById('placeholder').style.display = 'none';
     document.getElementById('resultsList').classList.remove('visible');
@@ -543,7 +545,7 @@
     document.getElementById('loading').classList.add('visible');
     document.getElementById('outputFooter').classList.remove('visible');
     document.getElementById('convertBtn').disabled = true;
-    document.getElementById('resultTitle').textContent = isMessenger ? '메신저' : '메일';
+    document.getElementById('resultTitle').textContent = titleMap[currentType] || '결과';
 
     selectedIndex = -1;
     currentResults = [];
@@ -559,7 +561,7 @@
       if (!res.ok) throw new Error(data.error || '서버 오류가 발생했습니다.');
 
       currentResults = data.results || [];
-      renderCards(isMessenger);
+      renderCards(currentType);
 
       document.getElementById('loading').classList.remove('visible');
       document.getElementById('resultsList').classList.add('visible');
@@ -573,17 +575,26 @@
     }
   }
 
-  function renderCards(isMessenger) {
+  function renderCards(type) {
     const list = document.getElementById('resultsList');
     list.innerHTML = '';
     currentResults.forEach((item, i) => {
       const card = document.createElement('div');
       card.className = 'result-card' + (i === 0 ? ' selected' : '');
       card.onclick = () => selectCard(i);
+
+      let bodyHtml = '';
+      if (type === 'report' && item.bullets) {
+        bodyHtml = item.bullets.map(b => `• ${b}`).join('\n');
+      } else {
+        bodyHtml = item.body || '';
+      }
+
       card.innerHTML = `
         <div class="card-num">버전 ${i + 1}</div>
-        ${!isMessenger && item.subject ? `<div class="card-subject">📌 ${item.subject}</div>` : ''}
-        <div class="card-body">${item.body}</div>
+        ${type === 'mail' && item.subject ? `<div class="card-subject">📌 ${item.subject}</div>` : ''}
+        ${type === 'report' && item.title ? `<div class="card-subject">📋 ${item.title}</div>` : ''}
+        <div class="card-body">${bodyHtml}</div>
         <div class="card-check">✓</div>
       `;
       list.appendChild(card);
@@ -601,7 +612,13 @@
   function copySelected() {
     if (selectedIndex < 0 || !currentResults[selectedIndex]) return;
     const item = currentResults[selectedIndex];
-    const full = item.subject ? `제목: ${item.subject}\n\n${item.body}` : item.body;
+    let full;
+    if (currentType === 'report') {
+      const bullets = item.bullets ? item.bullets.map(b => `• ${b}`).join('\n') : '';
+      full = item.title ? `${item.title}\n\n${bullets}` : bullets;
+    } else {
+      full = item.subject ? `제목: ${item.subject}\n\n${item.body}` : item.body;
+    }
     navigator.clipboard.writeText(full).then(showToast);
   }
 
